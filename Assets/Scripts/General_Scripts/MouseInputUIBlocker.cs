@@ -12,26 +12,26 @@ public class MouseInputUIBlocker : MonoBehaviour {
 	private void Start() {
 		eventTrigger = GetComponent<EventTrigger>();
 		if (eventTrigger != null) {
-			EventTrigger.Entry enterUIEntry = new EventTrigger.Entry();
-			
-			// Pointer Enter
-			enterUIEntry.eventID = EventTriggerType.PointerEnter;
-			enterUIEntry.callback.AddListener((eventData) => { EnterUI(); });
-			eventTrigger.triggers.Add(enterUIEntry);
+      EventTrigger.Entry enterUIEntry = new EventTrigger.Entry();
+      
+      // Pointer Enter
+      enterUIEntry.eventID = EventTriggerType.PointerEnter;
+      enterUIEntry.callback.AddListener((eventData) => { EnterUI(); });
+      eventTrigger.triggers.Add(enterUIEntry);
 
-			//Pointer Exit
-			EventTrigger.Entry exitUIEntry = new EventTrigger.Entry();
-			exitUIEntry.eventID = EventTriggerType.PointerExit;
-			exitUIEntry.callback.AddListener((eventData) => { ExitUI(); });
-			eventTrigger.triggers.Add(exitUIEntry);
+      //Pointer Exit
+      EventTrigger.Entry exitUIEntry = new EventTrigger.Entry();
+      exitUIEntry.eventID = EventTriggerType.PointerExit;
+      exitUIEntry.callback.AddListener((eventData) => { ExitUI(); });
+      eventTrigger.triggers.Add(exitUIEntry);
 		}
 	}
 
 	public void EnterUI() {
-			BlockedByUI = true;
+    BlockedByUI = true;
 	}
 	public void ExitUI() {
-			BlockedByUI = false;
+    BlockedByUI = false;
 	}
 
 }

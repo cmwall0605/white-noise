@@ -4,10 +4,10 @@ using UnityEngine;
 
 [CreateAssetMenu (menuName = "RoomGenerator/RoomData")]
 public class RoomData : ScriptableObject {
-    [Header("Room Data")]
-    public GameObject prefab;
+  [Header("Room Data")]
+  public GameObject prefab;
 
-    public bool isSpawnLocal;
+  public bool isSpawnLocal;
 
-    public bool isBossRoom;
+  public bool isBossRoom;
 }
