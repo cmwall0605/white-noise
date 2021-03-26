@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 1511646623400862526, guid: 8ad010a7eca14554898f8435868800ac, type: 3}
   isSpawnLocal: 0
-  isBossRoom: 1
+  roomType: 3
