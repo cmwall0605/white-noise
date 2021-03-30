@@ -148,14 +148,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 66080831}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 479c40cdad37d4f4184827d4dbcf6b3e, type: 3}
+  m_Script: {fileID: 11500000, guid: ad97894c48b97de47961293f498641f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraVelocity: 15
+  cameraVelocity: 7.5
   edgeDeltaTrigger: 3
   maxScrollDistance: 30
   minScrollDistance: 5
-  scrollVelocity: 10
+  scrollVelocity: 30
   zoomLevel: 15
   partyVelocity: 25
   distanceDeleta: 0.1

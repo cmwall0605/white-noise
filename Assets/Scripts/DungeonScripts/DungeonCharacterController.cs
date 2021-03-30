@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 
 [RequireComponent(typeof(CharacterController))]
-public class DungeonController : MonoBehaviour {
+public class DungeonCharacterController : MonoBehaviour {
 
     private const string MASTER_DUNGEON_LOOP = "masterDungeonLoop",
                          ACTUAL_CAMERA = "actualCamera",
@@ -19,7 +19,8 @@ public class DungeonController : MonoBehaviour {
                          WAYPOINT = "waypoint",
                          SCROLL_WHEEL = "Mouse ScrollWheel",
                          VERTICAL = "Vertical",
-                         HORIZONTAL = "Horizontal";
+                         HORIZONTAL = "Horizontal",
+                         FADE = "Fade";
 
                 // The cam's movement velocity
     public float cameraVelocity = 10.0f,
@@ -68,6 +69,9 @@ public class DungeonController : MonoBehaviour {
         masterDungeonScript = GameObject.Find(MASTER_DUNGEON_LOOP).
             GetComponent<MasterDungeonScript>();
 
+        GameObject.Find(UI_CANVAS).transform.Find(FADE).gameObject.
+            SetActive(false);
+
         actualCamera = transform.Find(ACTUAL_CAMERA).gameObject;
         
         if(actualCamera == null) {
@@ -88,6 +92,81 @@ public class DungeonController : MonoBehaviour {
     /// and execute in that exact frame. Currently calculates player selection
     /// </summary>
     public void Update() {
+
+        HandlRoomMovement();
+
+        HandleRoomSelect();
+
+        HandleZoom();
+        
+        HanldeCameraMovement();
+    }
+
+    /// <summary>
+    /// Handles the keyboard and edge scrolling movement of the camera.
+    /// </summary>
+    public void HanldeCameraMovement() {
+
+        Vector3 movement = Vector3.zero;
+
+        // Right Movement
+        if (Input.GetAxis(HORIZONTAL) > 0 
+        || (Input.mousePosition.x >= Screen.width - edgeDeltaTrigger && 
+            Input.mousePosition.x <= Screen.width)) {
+
+            movement += transform.right * cameraVelocity * Time.fixedDeltaTime;
+
+        // Left Movement
+        } else if (Input.GetAxis(HORIZONTAL) < 0 
+        || (Input.mousePosition.x <= edgeDeltaTrigger && 
+            Input.mousePosition.x >= 0)) {
+
+            movement += -transform.right * cameraVelocity * Time.fixedDeltaTime;
+        }
+
+        // Up Movement
+        if (Input.GetAxis(VERTICAL) > 0 
+        || (Input.mousePosition.y >= Screen.height - edgeDeltaTrigger && 
+            Input.mousePosition.y <= Screen.height)) {
+
+            movement += transform.forward * cameraVelocity * 
+                Time.fixedDeltaTime;
+
+        // Down Movement
+        } else if (Input.GetAxis(VERTICAL) < 0
+        || (Input.mousePosition.y <= edgeDeltaTrigger && 
+            Input.mousePosition.y >= 0)) {
+
+            movement += -transform.forward * cameraVelocity * 
+                Time.fixedDeltaTime;
+        }
+
+        // The command which moves the camera after all axis are read.
+        playerCameraController.Move(movement);
+
+        // The command which moves the camera after the scroll value is 
+        //   calculated.
+        actualCamera.transform.localPosition = new Vector3(
+            actualCamera.transform.localPosition.x,
+            zoomLevel,
+            -zoomLevel);
+    }
+
+    /// <summary>
+    /// Handles the zoom functionality.
+    /// </summary>
+    public void HandleZoom() {
+
+        if(!MouseInputUIBlocker.BlockedByUI) {
+            zoomLevel += scrollVelocity * Time.fixedDeltaTime * -Input.mouseScrollDelta.y;
+
+            // Clamp the zoom level between the min and max scroll distance
+            zoomLevel = Mathf.Clamp(zoomLevel, minScrollDistance, 
+                                    maxScrollDistance);
+        }
+    }
+
+    public void HandlRoomMovement() {
 
         // If there is a current room selected...
         if (currentRoom != null) {
@@ -127,7 +206,7 @@ public class DungeonController : MonoBehaviour {
 
                     newRoom = false;
 
-                    handleRoom();
+                    HandleRoomEntrance();
             }
     
         } else {
@@ -136,10 +215,13 @@ public class DungeonController : MonoBehaviour {
 
             currentRoom.setVisit(true);
         }
+    }
+
+    public void HandleRoomSelect() {
 
         // Player Selection, only execute if the cursor isn't blocked by any 
         //   UI elements.
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0) && !MouseInputUIBlocker.BlockedByUI) {
 
             /* The ray where the the mouse is positioned */
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -156,70 +238,18 @@ public class DungeonController : MonoBehaviour {
 
                 if(currentRoom.isConnected(potentialRoom) && !isMoving) {
 
-                currentRoom = potentialRoom;
+                    currentRoom = potentialRoom;
 
-                isMoving = true;
+                    isMoving = true;
                 }
             }
         }
     }
 
-    public void FixedUpdate() {
-
-        Vector3 movement = Vector3.zero;
-
-        // Right Movement
-        if (Input.GetAxis(HORIZONTAL) > 0 
-        || (Input.mousePosition.x >= Screen.width - edgeDeltaTrigger && 
-            Input.mousePosition.x <= Screen.width)) {
-
-            movement += transform.right * cameraVelocity * Time.fixedDeltaTime;
-
-        // Left Movement
-        } else if (Input.GetAxis(HORIZONTAL) < 0 
-        || (Input.mousePosition.x <= edgeDeltaTrigger && 
-            Input.mousePosition.x >= 0)) {
-
-            movement += -transform.right * cameraVelocity * Time.fixedDeltaTime;
-        }
-
-        // Up Movement
-        if (Input.GetAxis(VERTICAL) > 0 
-        || (Input.mousePosition.y >= Screen.height - edgeDeltaTrigger && 
-            Input.mousePosition.y <= Screen.height)) {
-
-            movement += transform.forward * cameraVelocity * 
-                Time.fixedDeltaTime;
-
-        // Down Movement
-        } else if (Input.GetAxis(VERTICAL) < 0
-        || (Input.mousePosition.y <= edgeDeltaTrigger && 
-            Input.mousePosition.y >= 0)) {
-
-            movement += -transform.forward * cameraVelocity * 
-                Time.fixedDeltaTime;
-        }
-
-        // The command which moves the camera after all axis are read.
-        playerCameraController.Move(movement);
-        
-        // Get the scrollwheel value and sum it to the current zoom level
-        zoomLevel += Input.GetAxis(SCROLL_WHEEL) * -scrollVelocity;
-
-        // Clamp the zoom level between the min and max scroll distance
-        zoomLevel = Mathf.Clamp(zoomLevel, minScrollDistance, 
-                                maxScrollDistance);
-
-        // The command which moves the camera after the scroll value is 
-        //   calculated.
-        actualCamera.transform.localPosition = new Vector3(
-            actualCamera.transform.localPosition.x,
-            zoomLevel,
-            -zoomLevel);
-
-    }
-
-    public void handleRoom() {
+    /// <summary>
+    /// 
+    /// </summary>
+    public void HandleRoomEntrance() {
         switch(currentRoom.roomData.roomType) {
             case RoomType.Boss:
                 masterDungeonScript.runBossEvent(currentRoom);
