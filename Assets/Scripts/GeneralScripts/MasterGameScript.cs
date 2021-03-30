@@ -8,8 +8,6 @@ using UnityEngine;
 ///</summary>
 public class MasterGameScript : MonoBehaviour {
 
-    private const int BASE_HUNTER_PARTY_SIZE = 1;
-
     // define settings. Settings can only be set privately (within this class) 
     //  but can be gotten from anywhere.
     public UserSettings userSettings { private set; get; }

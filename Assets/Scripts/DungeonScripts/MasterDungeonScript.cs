@@ -23,7 +23,6 @@ public class MasterDungeonScript : MonoBehaviour {
 
     private bool isGenerating = false;
 
-    private System.Random random;
 [HideInInspector]
     public Room spawnRoom {
         get;
@@ -108,7 +107,7 @@ public class MasterDungeonScript : MonoBehaviour {
             yield return null;
         }
 
-        random = new System.Random(givenSeed);
+        Random.InitState(givenSeed);
 
         dungeonHolder = new GameObject();
 
@@ -126,7 +125,7 @@ public class MasterDungeonScript : MonoBehaviour {
 
         List<RoomData> eventRoomLayouts = new List<RoomData>();
 
-        int shopSpawn = random.Next((maxRooms-1)/2, maxRooms-1);
+        int shopSpawn = Random.Range((maxRooms-1)/2, maxRooms-1);
 
         // Stack of the rooms to be searched through. Creates rooms in a DFS
         // style manner to create more enlongated dungeons.
@@ -158,7 +157,7 @@ public class MasterDungeonScript : MonoBehaviour {
         }
 
         // Grab a random spawn layout to set as the spawn point.
-        RoomData spawnPoint = spawnLayouts[random.Next(0, spawnLayouts.Count)];
+        RoomData spawnPoint = spawnLayouts[Random.Range(0, spawnLayouts.Count)];
 
         // Create a list of rooms to process; this list indicates rooms which
         //  were created but its connected rooms were not created/set.
@@ -209,10 +208,10 @@ public class MasterDungeonScript : MonoBehaviour {
                     possibleEntrances[i];
                 
                 // For Each possible new connection, if the position is taken,
-                // have a 1/6 chance of connecting them.
+                // have a 1/5 chance of connecting them.
                 foreach(Vector2 position in takenPosition) {
                     if(possibleNewPosition.Equals(position)) {
-                        if(random.Next(0,5) == 0 && 
+                        if(Random.Range(0,5) == 0 && 
                             getRoomFromPosition(possibleNewPosition).roomData.roomType 
                             != RoomType.Shop) {
 
@@ -253,7 +252,7 @@ public class MasterDungeonScript : MonoBehaviour {
 
                 Vector2 entrance;
 
-                int entranceIndex = random.Next(0, possibleEntrances.Count);
+                int entranceIndex = Random.Range(0, possibleEntrances.Count);
 
                 entrance = possibleEntrances[entranceIndex];
 
@@ -265,18 +264,18 @@ public class MasterDungeonScript : MonoBehaviour {
 
                 if(roomCount == maxRooms - 1) {
                     connectedRoom = createRoom(bossRoomLayouts
-                        [random.Next(0, bossRoomLayouts.Count)], newPosition);
+                        [Random.Range(0, bossRoomLayouts.Count)], newPosition);
                 } else if(roomCount == shopSpawn) {
                     connectedRoom = createRoom(shopRoomLayouts
-                        [random.Next(0, bossRoomLayouts.Count)], newPosition);
+                        [Random.Range(0, bossRoomLayouts.Count)], newPosition);
                 } else {
-                    if(random.Next(0,4) != 0) {
+                    if(Random.Range(0,4) != 0) {
                         connectedRoom = createRoom(encounterRoomLayouts
-                            [random.Next(0, encounterRoomLayouts.Count)], 
+                            [Random.Range(0, encounterRoomLayouts.Count)], 
                             newPosition);
                     } else {
                         connectedRoom = createRoom(eventRoomLayouts
-                            [random.Next(0, eventRoomLayouts.Count)], 
+                            [Random.Range(0, eventRoomLayouts.Count)], 
                             newPosition);
                     }
 
@@ -378,7 +377,7 @@ public class MasterDungeonScript : MonoBehaviour {
             hallwayRotation = Quaternion.AngleAxis(90, Vector3.up);
         }
 
-        GameObject.Instantiate(hallwayLayouts[random.Next(0,
+        GameObject.Instantiate(hallwayLayouts[Random.Range(0,
             hallwayLayouts.Length)], hallwayPosition, hallwayRotation, 
             dungeonHolder.transform);
     }
@@ -392,7 +391,7 @@ public class MasterDungeonScript : MonoBehaviour {
     /// <returns>Returns the amount of connected rooms a room should have</returns>
     public int generateConnectionCount(int entranceCount, Vector3 spawnProbability) {
 
-        int randomValue = random.Next(0,100);
+        int randomValue = Random.Range(0,100);
 
         if(randomValue < spawnProbability.x || entranceCount < 2) {
             return 1;

@@ -57,8 +57,6 @@ public class DungeonController : MonoBehaviour {
 
     private MasterDungeonScript masterDungeonScript;
 
-    private Transform selectedPuppet;
-
     private Room currentRoom;
 
     /// <summary>
@@ -125,12 +123,13 @@ public class DungeonController : MonoBehaviour {
 
             // If the player is not moving, then handle what to do in the
             //   current room.
-            } else {
-                if(newRoom) {
+            } else if(newRoom){
+
                     newRoom = false;
+
                     handleRoom();
-                }
             }
+    
         } else {
 
             currentRoom = masterDungeonScript.spawnRoom;
@@ -203,7 +202,7 @@ public class DungeonController : MonoBehaviour {
 
         // The command which moves the camera after all axis are read.
         playerCameraController.Move(movement);
-
+        
         // Get the scrollwheel value and sum it to the current zoom level
         zoomLevel += Input.GetAxis(SCROLL_WHEEL) * -scrollVelocity;
 
