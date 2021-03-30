@@ -6,7 +6,7 @@ using UnityEngine;
 /// Script which handles the collider for the player's camera. Handles creating
 /// the cross section functionality of the walls in the dungeon.
 ///</summary>
-public class CameraCollider : MonoBehaviour {
+public class CameraColliderScript : MonoBehaviour {
 
     public float wallDownPosition = 0.5f,
 
