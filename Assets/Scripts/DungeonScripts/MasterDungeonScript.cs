@@ -19,6 +19,8 @@ public class MasterDungeonScript : MonoBehaviour {
 
     public Vector3 manualSpawnProbability;
 
+    public List<Item> spawnPool;
+
     private List<Room> roomList;
 
     private bool isGenerating = false;
@@ -421,7 +423,7 @@ public class MasterDungeonScript : MonoBehaviour {
     /// </summary>
     /// <param name="currentRoom"></param>
     public void runShopEvent(Room currentRoom) {
-        print("Shop");
+        MasterGameScript.instance.character.inv.Add(spawnPool[0]);
     }
 
     /// <summary>

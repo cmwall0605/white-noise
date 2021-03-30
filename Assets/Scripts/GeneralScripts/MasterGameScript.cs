@@ -8,6 +8,8 @@ using UnityEngine;
 ///</summary>
 public class MasterGameScript : MonoBehaviour {
 
+    public Character character { private set; get; }
+
     // define settings. Settings can only be set privately (within this class) 
     //  but can be gotten from anywhere.
     public UserSettings userSettings { private set; get; }
@@ -38,5 +40,7 @@ public class MasterGameScript : MonoBehaviour {
 
         /* A new series of game settings */
         gameSettings = new GameSettings();
+
+        character = new Character();
     }
 }

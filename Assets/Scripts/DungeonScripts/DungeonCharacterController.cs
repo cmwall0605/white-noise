@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(CharacterController))]
 public class DungeonCharacterController : MonoBehaviour {
 
-    private const string MASTER_DUNGEON_LOOP = "masterDungeonLoop",
+    private const string MASTER_DUNGEON_SCRIPT = "MasterDungeonScript",
                          ACTUAL_CAMERA = "actualCamera",
                          UI_CANVAS = "UI Canvas",
                          PLAYER = "Player",
@@ -66,7 +66,7 @@ public class DungeonCharacterController : MonoBehaviour {
     /// </summary>
     void Start() {
         
-        masterDungeonScript = GameObject.Find(MASTER_DUNGEON_LOOP).
+        masterDungeonScript = GameObject.Find(MASTER_DUNGEON_SCRIPT).
             GetComponent<MasterDungeonScript>();
 
         GameObject.Find(UI_CANVAS).transform.Find(FADE).gameObject.
@@ -98,7 +98,10 @@ public class DungeonCharacterController : MonoBehaviour {
         HandleRoomSelect();
 
         HandleZoom();
-        
+    }
+
+    public void FixedUpdate() {
+
         HanldeCameraMovement();
     }
 

@@ -2,30 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Inventory : MonoBehaviour {
-
-    public static Inventory instance;
-
-    public delegate void OnItemChanged();
-    public OnItemChanged OnItemChangedCallback;
+public class Inventory {
 
     public List<Item> items = new List<Item>();
 
     public int space = 20;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    void Awake () {
-
-        if(instance != null) {
-
-            Debug.LogWarning("More than one instance of Inventory found!");
-        }
-
-        instance = this;
-    }
-    
     /// <summary>
     /// 
     /// </summary>
@@ -39,10 +21,7 @@ public class Inventory : MonoBehaviour {
 
                 items.Add(item);
 
-                if(OnItemChangedCallback != null) {
-                    
-                    OnItemChangedCallback.Invoke();
-                }
+                InventoryUI.instance.AddItemInvUI(item);
 
                 return true;
 
